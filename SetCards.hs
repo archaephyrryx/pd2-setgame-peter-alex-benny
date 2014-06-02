@@ -75,8 +75,14 @@ instance Ord Card where
 properties :: Card -> Props
 properties c = (count c, fill c, color c, shape c)
 
+proper :: Props -> Card
+proper (n,f,c,s) = Card n f c s
+
 complete :: Props -> Props -> Props
 complete (a,i,m,x) (b,j,n,y) = (complement a b, complement i j, complement m n, complement x y)
+
+third :: Card -> Card -> Card
+third a b = proper $ complete (properties a) (properties b)
 
 isSet :: Card -> Card -> Card -> Bool
 isSet x y z = completes (properties x) (properties y) (properties z)
