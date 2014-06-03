@@ -1,34 +1,53 @@
-import java.awt.*;
+public class Card implements Comparable<Card> {
+    public Color color;
+    public Count count;
+    public Shape shape;
+    public Fill fill;
 
-public class Card{
-    private Color color;
-    private String shape, fill;
-    private int number;
-
-    public Card(int n, Color c, String s, String f){
-	number = n;
-	color = c;
-	shape = s;
-	fill = f;
+    public Card (Color color, Count count, Fill fill, Shape shape) {
+        this.color = color;
+        this.count = count;
+        this.shape = shape;
+        this.fill = fill;
     }
 
-    public int getNum(){
-	return number;
+    public Card (int i, int j, int k, int l) {
+        this.color = Color.toEnum(i);
+        this.count = Count.toEnum(j);
+        this.shape = Shape.toEnum(k);
+        this.fill = Fill.toEnum(l);
     }
 
-    public Color getColor(){
-	return color;
+    public Card(int n) {
+        this(n, (n/3), (n/9), (n/27));
     }
 
-    public String getFill(){
-	return fill;
+    public Card(Card a, Card b) {
+        this.color = Color.complement(a.color, b.color);
+        this.count = Count.complement(a.count, b.count);
+        this.shape = Shape.complement(a.shape, b.shape);
+        this.fill = Fill.complement(a.fill, b.fill);
     }
 
-    public String getShape(){
-	return shape;
+    public int number() {
+        return (1*Color.fromEnum(color) +
+                3*Count.fromEnum(count) +
+                9*Shape.fromEnum(shape) +
+                27*Fill.fromEnum(fill));
     }
 
+    public int compareTo(Card other) {
+        return (this.number() - other.number());
+    }
 
+    public boolean equals(Card other) {
+        return (this.compareTo(other) == 0);
+    }
 
+    public String toString() {
+	return (String.format("%s %s %s %s", this.count, this.fill, this.color, this.shape));
+    }
 
 }
+
+
