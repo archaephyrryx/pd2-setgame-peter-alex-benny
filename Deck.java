@@ -15,9 +15,11 @@ public class Deck {
     }
 
     public ArrayList<Card> deal(int i) {
-        j = (remaining() < i) ? remaining() : i;
-        ArrayList<Card> hand = deck.subList(0,j);
-        deck.removeRange(0,j);
+        int j = (remaining() < i) ? remaining() : i;
+        ArrayList<Card> hand = new ArrayList<Card>(deck.subList(0,j));
+        for (Card c : hand) {
+            deck.remove(c);
+        }
         return hand;
     }
 

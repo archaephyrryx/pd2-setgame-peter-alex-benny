@@ -1,91 +1,143 @@
-module SetCards where
+public class Card implements Comparable<Card> {
+    public Color color;
+    public Count count;
+    public Fill fill;
+    public Shape shape;
 
-import Data.List
-   
- 
-class (Eq a) => Prop a where
-	complement :: a -> a -> a
+    public Card (Color color, Count count, Fill fill, Shape shape) {
+        this.color = color;
+        this.count = count;
+        this.fill = fill;
+        this.shape = shape;
+    }
 
-data Count = One | Two | Three
-    deriving (Show, Read, Eq, Ord, Enum)
+    public Card (int i, int j, int k, int l) {
+        this.color = Color.toEnum(i);
+        this.count = Count.toEnum(j);
+        this.fill = Fill.toEnum(k);
+        this.shape = Shape.toEnum(l);
+    }
 
-instance Prop Count where
-    complement x y = toEnum ((6 - fromEnum x - fromEnum y) `mod` 3)
+    public Card(int n) {
+        this(i, (i/3), (i/9), (i/27));
+    }
 
-data Fill = Empty | Shaded | Filled
-    deriving (Show, Read, Eq, Ord, Enum)
+    public Card(Card a, Card b) {
+        this.color = Color.complement(a.color, b.color);
+        this.count = Count.complement(a.count, b.count);
+        this.fill = Fill.complement(a.fill, b.fill);
+        this.shape = Shape.complement(a.shape, b.shape);
+    }
 
-instance Prop Fill where
-    complement x y = toEnum ((6 - fromEnum x - fromEnum y) `mod` 3)
+    public int number() {
+        return (1*Color.fromEnum(color) +
+                3*Count.fromEnum(count) +
+                9*Fill.fromEnum(fill) +
+                27*Shape.fromEnum(shape));
+    }
 
-data Color = Red | Green | Purple
-    deriving (Show, Read, Eq, Ord, Enum)
+    public int compareTo(Card other) {
+        return (this.number() - other.number());
+    }
 
-instance Prop Color where
-    complement x y = toEnum ((6 - fromEnum x - fromEnum y) `mod` 3)
+    public boolean equals(Card other) {
+        return (this.compareTo(other) == 0);
+    }
 
-data Shape = Oval | Diamond | Wave
-    deriving (Show, Read, Eq, Ord, Enum)
+}
 
-instance Prop Shape where
-    complement x y = toEnum ((6 - fromEnum x - fromEnum y) `mod` 3)
+public enum Color  {
+    RED, GREEN, PURPLE;
 
-type Props = (Count, Fill, Color, Shape)
+    public Color toEnum(int i) {
+        switch (i % 3) {
+            case 0: return RED;
+            case 1: return GREEN;
+            case 2: return PURPLE;
+        }
+    }
 
+    public int fromEnum(Color c) {
+        switch (c) {
+            case RED: return 0;
+            case GREEN: return 1;
+            case PURPLE: return 2;
+        }
+    }
 
+    public Color complement(Color a, Color b) {
+        return toEnum((6 - fromEnum(a) - fromEnum(b))%3);
+    }
+}
 
-data Card = Card { count :: Count, fill :: Fill, color :: Color, shape :: Shape }
-	deriving (Read, Eq)
+public enum Count {
+    ONE, TWO, THREE;
 
-instance Show Card where
-	show c =  unwords [show (count c), show (fill c), show (color c), show (shape c)]
-	
-instance Enum Card where
-	toEnum n = let [i,f,c,s] = redux 4 3 n in Card (toEnum i) (toEnum f) (toEnum c) (toEnum s)
-		where
-			redux :: Int -> Int -> Int -> [Int]
-			redux 0 _ _ = []
-			redux n m x = let (q,r) = x `divMod` m in r : redux (n-1) m q
-	fromEnum c = foldr (\x -> \y -> x + 3*y) 0 (propNums c)
+    public Count toEnum(int i) {
+        switch (i % 3) {
+            case 0: return ONE;
+            case 1: return TWO;
+            case 2: return THREE;
+        }
+    }
 
-keycard :: [Char] -> Card
-keycard [n,f,c,s] = Card (nChar n) (fChar f) (cChar c) (sChar s)
-    where
-	nChar '1' = One 
-	nChar '2' = Two
-	nChar '3' = Three 
-	fChar 'E' = Empty
-	fChar 'S' = Shaded
-	fChar 'F' = Filled
-	cChar 'R' = Red
-	cChar 'G' = Green
-	cChar 'P' = Purple
-	sChar 'O' = Oval
-	sChar 'D' = Diamond
-	sChar 'W' = Wave
+    public int fromEnum(Count c) {
+        switch (c) {
+            case ONE: return 0;
+            case TWO: return 1;
+            case THREE: return 2;
+        }
+    }
 
+    public Count complement(Count a, Count b) {
+        return toEnum((6 - fromEnum(a) - fromEnum(b))%3);
+    }
+}
 
-propNums :: Card -> [Int]
-propNums c = [fromEnum (count c), fromEnum (fill c), fromEnum(color c), fromEnum(shape c)]
+public enum Fill {
+    EMPTY, SHADED, FILLED;
 
+    public Fill toEnum(int i) {
+        switch (i % 3) {
+            case 0: return EMPTY;
+            case 1: return SHADED;
+            case 2: return FILLED;
+        }
+    }
 
-instance Ord Card where
-	compare c c' = compare (properties c) (properties c')
+    public int fromEnum(Fill f) {
+        switch (f) {
+            case EMPTY: return 0;
+            case SHADED: return 1;
+            case FILLED: return 2;
+        }
+    }
 
-properties :: Card -> Props
-properties c = (count c, fill c, color c, shape c)
+    public Fill complement(Fill a, Fill b) {
+        return toEnum((6 - fromEnum(a) - fromEnum(b))%3);
+    }
+}
 
-proper :: Props -> Card
-proper (n,f,c,s) = Card n f c s
+public enum Shape {
+    OVAL, DIAMOND, WAVE;
 
-complete :: Props -> Props -> Props
-complete (a,i,m,x) (b,j,n,y) = (complement a b, complement i j, complement m n, complement x y)
+    public Shape toEnum(int i) {
+        switch (i % 3) {
+            case 0: return OVAL;
+            case 1: return DIAMOND;
+            case 2: return WAVE;
+        }
+    }
 
-third :: Card -> Card -> Card
-third a b = proper $ complete (properties a) (properties b)
+    public int fromEnum(Shape s) {
+        switch (s) {
+            case OVAL: return 0;
+            case DIAMOND: return 1;
+            case WAVE: return 2;
+        }
+    }
 
-isSet :: Card -> Card -> Card -> Bool
-isSet x y z = completes (properties x) (properties y) (properties z)
-    where
-	completes :: Props -> Props -> Props -> Bool
-	completes a b c = c == (complete a b)
+    public Shape complement(Shape a, Shape b) {
+        return toEnum((6 - fromEnum(a) - fromEnum(b))%3);
+    }
+}

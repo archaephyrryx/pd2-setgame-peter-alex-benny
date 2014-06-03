@@ -1,14 +1,31 @@
-module Shuffle where
+public class Shuffle {
+	
+	public static int fact(int n) {
+		return fact(n, 1);
+	}
 
-(!) :: Int -> Int
-(!) n = product [1..n]
+	private static int fact(int n, int c) {
+		if (n == 0) {
+			return c;
+		} else {
+			return fact(n-1, c*n);
+		}
+	}
 
-choose :: Int -> Int -> Int
-choose a b = (product [a-b+1..a])`div`(product [1..b])
+	public static int choose(int i, int j) {
+		return (fact(i)/(fact(j) * fact(i - j)));
+	}
 
-omit :: Int -> ([a] -> [a])
-omit 0 = tail
-omit n = (\(x:xs) -> x:(omit (n-1) xs))
+	public static Card[] omit(int n, Card[] cards) {
+		Card[] omitted = new Card[cards.length - 1];
+		for (int i = 0; i < cards.length - 1; ++i) {
+			int j = (i < n) ? i : i + 1;
+			omitted[i] = cards[j];
+		}
+		return omitted;
+	}
+
+	public static Card[] 
 
 shuffle :: Int -> Int -> ([a] -> [a])
 shuffle 0 _ = id

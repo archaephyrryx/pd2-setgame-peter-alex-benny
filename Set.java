@@ -1,56 +1,77 @@
-import SetCards
+import java.util.*;
 
-type Pile = [Card]
+public class Set {
+    private boolean[][] present = {{false,false,false}, // RGB
+                                   {false,false,false}, // 123
+                                   {false,false,false}, // ODW
+                                   {false,false,false}}; // ESF
 
--- Brutally Inefficient
+    public void readIn(ArrayList<Card> cards) {
+        for (Card c : cards) {
+            if (!present[0][Color.fromEnum(c.color)])
+                present[0][Color.fromEnum(c.color)] =  true;
+            if (!present[1][Count.fromEnum(c.count)])
+                present[1][Count.fromEnum(c.count)] =  true;
+            if (!present[2][Shape.fromEnum(c.shape)])
+                present[2][Shape.fromEnum(c.shape)] =  true;
+            if (!present[3][Fill.fromEnum(c.fill)])
+                present[3][Fill.fromEnum(c.fill)] =  true;
+        }
+    }
 
-triples :: Pile -> [[Card]]
-triples p = [ [p !! i , p !! j] | i <- [0..m], j <- [i+1..m]]
-    where
-	m = (length p) - 1
-
-sets :: Pile -> ([Card] -> Bool) -> [[Card]]
-sets p f = map (\[a,b] -> [a,b,third a b]) $ filter (\[a,b] -> f [a,b] && elem (third a b) p) (triples p)
-
--- Less Inefficient : Find singleton sets first
-
-present :: Prop p => (Card -> p) -> (p,p,p) -> [Card] -> [Bool]
-present f (a,b,c) xs = present' xs (a,b,c) [False,False,False]
-    where
-        present' [] _ cs = cs
-        present' (x:xs) (a,b,c) [hasA,hasB,hasC] | f x == a = (\[l,m,n] -> [True,m,n]) (present' xs (a,b,c) [hasA,hasB,hasC])
-                            | f x == b = (\[l,m,n] -> [l,True,n]) (present' xs (a,b,c) [hasA,hasB,hasC])
-                            | f x == c = (\[l,m,n] -> [l,m,True]) (present' xs (a,b,c) [hasA,hasB,hasC])
-
-hasColor = present (\x -> color x) (Red,Green,Purple)
-hasCount = present (\x -> count x) (One,Two,Three)
-hasShape = present (\x -> shape x) (Oval,Diamond,Wave)
-hasFill  = present (\x ->  fill x) (Empty,Shaded,Filled)
-
-freq _ [] = 0
-freq x (y:ys) | x == y = 1 + freq x ys
-              | otherwise = freq x ys
-
-hasProps :: [Card] -> [Bool]
-hasProps = (map and).(apply [hasColor, hasCount, hasShape, hasFill])
-    where      
-        apply :: [(a -> b)] -> a -> [b]
-        apply [] _ = []
-        apply (f:fs) x = f x : apply fs x
-
-enjoin :: (a -> Bool) -> (a -> Bool) -> (a -> Bool)
-enjoin f g = (\x -> f x && g x)
-
-join :: [Bool] -> [([Card] -> Bool)] -> ([Card] -> Bool)
-join _ [] = (\_ -> True)
-join (b:bs) (f:fs) | b = enjoin f (join bs fs)
-                   | otherwise = join bs fs
+    public boolean spansColor() { return (present[0][0] && present[0][1] && present[0][2]); }
+    public boolean spansCount() { return (present[1][0] && present[1][1] && present[1][2]); }
+    public boolean spansShape() { return (present[2][0] && present[2][1] && present[2][2]); }
+    public boolean spansFill()  { return (present[3][0] && present[3][1] && present[3][2]); }
 
 
-same :: Prop p => (Card -> p) -> ([Card] -> Bool)
-same f [a,b] = f a == f b
+    public ArrayList<Triple> sets(ArrayList<Card> cards) {
+        ArrayList<Triple> sets = new ArrayList<Triple>();
+        for (int i = 0; i < cards.size(); ++i) {
+            Card x = cards.get(i);
+            for (int j = i+1; j < cards.size(); ++j) {
+                Card y = cards.get(j);
+                Pair xy = new Pair(x,y);
+                if ((spansColor() || xy.sameColor()) && (spansCount() || xy.sameCount()) &&
+                    (spansShape() || xy.sameShape()) && (spansFill() || xy.sameFill())) {
+                    for (int k = j+1; k < cards.size(); ++k) {
+                        if (xy.last().equals(cards.get(k))) {
+                            sets.add(new Triple(xy));
+                        }
+                    }
+                }
+            }
+        }
+        return sets;
+    }
+}
+class Pair {
+    public final Card a;
+    public final Card b;
 
-reset :: Pile -> [[Card]]
-reset p | null p = []
-        | length p < 3 = []
-        | otherwise = let has = hasProps p in sets p (join (map not has) ([same color, same count, same shape, same fill]))
+    public Pair(Card x, Card y) {
+        a = x;
+        b = y;
+    }
+
+    public Card last() {
+        return (new Card(a,b));
+    }
+
+    public final boolean sameColor() { return (a.color == b.color); }
+    public final boolean sameCount() { return (a.count == b.count); }
+    public final boolean sameFill() { return (a.fill == b.fill); }
+    public final boolean sameShape() { return (a.shape == b.shape); }
+}
+
+class Triple {
+    public Card a;
+    public Card b;
+    public Card c;
+
+    public Triple(Pair p) {
+        a = p.a;
+        b = p.b;
+        c = p.last();
+    }
+}
