@@ -10,7 +10,20 @@ triples p = [ [p !! i , p !! j] | i <- [0..m], j <- [i+1..m]]
 	m = (length p) - 1
 
 sets :: Pile -> ([Card] -> Bool) -> [[Card]]
-sets p f = map (\[a,b] -> [a,b,third a b]) $ filter (\[a,b] -> f [a,b] && elem (third a b) p) (triples p)
+sets p f = uniq $ map order $ map (\[a,b] -> [a,b,third a b]) $ filter (\[a,b] -> f [a,b] && elem (third a b) p) (triples p)
+
+order :: Ord a => [a] -> [a]
+order [] = []
+order (x:[]) = (x:[])
+order (x:y:[]) | x < y = (x:y:[])
+	       | otherwise = (y:x:[])
+order (x:y:z:[]) | x < y && x < z = x : order (y:z:[])
+                 | y < z && y < x = y : order (x:z:[])
+		 | z < x && z < y = z : order (x:y:[])
+
+uniq :: Eq a => [a] -> [a]
+uniq [] = []
+uniq (x:xs) = x : (uniq $ filter (/=x) xs)
 
 -- Less Inefficient : Find singleton sets first
 
