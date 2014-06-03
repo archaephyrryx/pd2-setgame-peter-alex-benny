@@ -1,4 +1,4 @@
-pd2-settler-peterduchovni
-=========================
+pd2-setgame-peter-alex-benny
+============================
 
-Repository for AP CS Final Project - Settler (Peter Duchovni)
+Repository for AP CS Final Project - Set Game (Peter Duchovni, Benny Deng, Alex Ioustous)
