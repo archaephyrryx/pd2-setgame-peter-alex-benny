@@ -20,7 +20,13 @@ public class Main {
 	Set setfinder = new Set();
 	setfinder.readIn(cards);
 	ArrayList<Triple> sets = setfinder.sets(cards);
+	System.out.println("Individual sets:");
 	for (Triple t : sets) {
+	    System.out.printf("%s : %s : %s\n", t.a, t.b, t.c);
+	}
+	ArrayList<Triple> disjointsets = setfinder.disjointSets(cards);
+	System.out.println("Biggest group:");
+	for (Triple t : disjointsets) {
 	    System.out.printf("%s : %s : %s\n", t.a, t.b, t.c);
 	}
     }

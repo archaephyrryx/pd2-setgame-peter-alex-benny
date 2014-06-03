@@ -44,7 +44,57 @@ public class Set {
         }
         return sets;
     }
+
+    public static ArrayList<ArrayList<Triple>> powerSet(ArrayList<Triple> set) {
+	ArrayList<ArrayList<Triple>> power = new ArrayList<ArrayList<Triple>>();
+	if (set.size() == 0) {
+	    power.add(set);
+	    return power;
+	}
+	ArrayList<ArrayList<Triple>> with = powerSet(new ArrayList<Triple>(set.subList(1,set.size())));
+	for (ArrayList<Triple> l : with) {
+	    l.add(set.get(0));
+	}
+	ArrayList<ArrayList<Triple>> without = powerSet(new ArrayList<Triple>(set.subList(1,set.size())));
+	power.addAll(with);
+	power.addAll(without);
+	return power;
+    }
+
+    public static boolean isDisjoint(ArrayList<Triple> set) {
+	for (int i = 0; i < set.size(); ++i) {
+	    for (int j = i+1; j < set.size(); ++j) {
+		if (!(set.get(i).disjoint(set.get(j)))) {
+		    return false;
+		}
+	    }
+	}
+	return true;
+    }
+
+    public static ArrayList<ArrayList<Triple>> disjoint(ArrayList<Triple> all) {
+	ArrayList<ArrayList<Triple>> dis = new ArrayList<ArrayList<Triple>>(0);
+	ArrayList<ArrayList<Triple>> powerset = powerSet(all);
+	for (ArrayList<Triple> l : powerset) {
+	    if (isDisjoint(l))
+		dis.add(l);
+	}
+	return dis;
+    }
+
+    public ArrayList<Triple> disjointSets(ArrayList<Card> cards) {
+	ArrayList<Triple> allSets = sets(cards);
+	ArrayList<ArrayList<Triple>> all = disjoint(allSets);
+	ArrayList<Triple> best = new ArrayList<Triple>();
+	for (ArrayList<Triple> l : all) {
+	    if (l.size() > best.size()) {
+		best = l;
+	    }
+	}
+	return best;
+    }
 }
+
 class Pair {
     public final Card a;
     public final Card b;
@@ -73,5 +123,13 @@ class Triple {
         a = p.a;
         b = p.b;
         c = p.last();
+    }
+
+    public boolean member(Card x) {
+	return (x.equals(a) || x.equals(b) || x.equals(c));
+    }
+
+    public boolean disjoint(Triple other) {
+	return (!(this.member(other.a) || this.member(other.b) || this.member(other.c)));
     }
 }
