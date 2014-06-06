@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN"
+"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg:svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   x="0.0000000"
+   y="0.0000000"
+   width="744.09448"
+   height="1052.3622"
+   id="svg1">
+  <svg:defs
+     id="defs3" />
+  <svg:g
+     id="layer1">
+    <svg:path
+       d="M 126.95756,485.98124 C 163.87010,452.01359 207.12869,431.48956 290.42225,492.49778 C 373.02429,552.99950 429.70545,467.27786 459.64520,485.29995 C 490.64817,503.96203 509.03746,535.58463 441.07551,604.46980 C 373.82954,672.62927 317.53067,643.19020 269.64205,607.49361 C 220.82316,571.10360 171.83817,637.97253 122.68123,605.90937 C 72.875940,573.42331 89.335944,520.60140 126.95756,485.98124 z "
+       style="fill:none;fill-opacity:0.75000000;fill-rule:evenodd;stroke:#000000;stroke-width:5.0000000;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.0000000;stroke-opacity:1.0000000"
+       id="path10" />
+  </svg:g>
+</svg:svg>
