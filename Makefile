@@ -21,4 +21,4 @@ Set.class: Set.java Card.java Deck.java
 Main.class: Main.java Set.java Card.java
 
 clean:
-	$(RM) *.class
+	$(RM) *.class *.eps
