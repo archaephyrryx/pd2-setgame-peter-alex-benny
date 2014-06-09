@@ -2,10 +2,10 @@ import java.io.*;
 
 public class CardConverter {
     public static void convert(Card c, String name) {
-	int i = Shape.fromEnum(c.shape);
-	int j = Color.fromEnum(c.color);
-	int k = Count.fromEnum(c.count);
-	int l = Fill.fromEnum(c.fill);
+	int i = c.shapeInt();
+	int j = c.colorInt();
+	int k = c.countInt();
+	int l = c.fillInt();
 	Writer writer = null;
 	try {
 	    writer = new BufferedWriter(new OutputStreamWriter(

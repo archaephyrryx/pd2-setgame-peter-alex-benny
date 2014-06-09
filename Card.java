@@ -29,6 +29,12 @@ public class Card implements Comparable<Card> {
         this.fill = Fill.complement(a.fill, b.fill);
     }
 
+    public int colorInt() { return Color.fromEnum(color); }
+    public int countInt() { return Count.fromEnum(count); }
+    public int shapeInt() { return Shape.fromEnum(shape); }
+    public int fillInt() { return Fill.fromEnum(fill); }
+
+
     public int number() {
         return (1*Color.fromEnum(color) +
                 3*Count.fromEnum(count) +
