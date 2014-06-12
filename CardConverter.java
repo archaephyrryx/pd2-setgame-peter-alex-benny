@@ -18,7 +18,7 @@ public class CardConverter {
 	    try {writer.close();} catch (Exception ex) {}
 	}
 	try {
-	Process tr = Runtime.getRuntime().exec(String.format("asy %s.asy", name));
+	Process tr = Runtime.getRuntime().exec(String.format("asy -f png %s.asy", name));
 	} catch (IOException e) {}
     }
 

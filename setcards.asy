@@ -28,6 +28,9 @@ path wave(pair c, real x, real y)
     return (c+(x,y))..(c+(x-(y/2),-y))..(c+(-x+(y/2),-(warp*y)))..(c+(-x,-y))..(c+(-x+(y/2),y))..(c+(x-(y/2),warp*y))..cycle;
 }
 void generate(int shape, int color, int number, int fill) {
+    path border = (-xdiff-1,4+ydiff)--(xdiff+1,4+ydiff)--(xdiff+1,-4-ydiff)--(-xdiff-1,-4-ydiff)--cycle;
+    filldraw(border,white);
+
     path image;
     pen hue;
     int i;
@@ -55,5 +58,4 @@ void generate(int shape, int color, int number, int fill) {
 	    filldraw(shift(0,3*(i-n))*image,hue);
 	}
     }
-    draw((-xdiff-1,4+ydiff)--(xdiff+1,4+ydiff)--(xdiff+1,-4-ydiff)--(-xdiff-1,-4-ydiff)--cycle,invisible);
 }
