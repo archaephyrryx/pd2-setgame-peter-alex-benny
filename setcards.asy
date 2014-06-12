@@ -1,7 +1,7 @@
 import graph;
 import patterns;
 
-size(3inch,3inch);
+size(5inch,7inch);
 pen redcol = red;
 pen greencol = heavygreen;
 pen purplecol = heavymagenta;
@@ -46,12 +46,14 @@ void generate(int shape, int color, int number, int fill) {
 	hue = purplecol;
     }
     for (i = 0; i < number+1; ++i) {
-	    draw(shift(0,3*i)*image,hue+thickness);
+	real n = (number/2);
+	    draw(shift(0,3*(i-n))*image,hue+thickness);
 	if (fill % 3 == 1) {
 	    add("hatch",hatch(hatchsep,N,hue+hatchwidth));
-	    filldraw(shift(0,3*i)*image,pattern("hatch"));
+	    filldraw(shift(0,3*(i-n))*image,pattern("hatch"));
 	} else if (fill % 3 == 2) {
-	    filldraw(shift(0,3*i)*image,hue);
+	    filldraw(shift(0,3*(i-n))*image,hue);
 	}
     }
+    draw((-xdiff-1,4+ydiff)--(xdiff+1,4+ydiff)--(xdiff+1,-4-ydiff)--(-xdiff-1,-4-ydiff)--cycle,invisible);
 }
