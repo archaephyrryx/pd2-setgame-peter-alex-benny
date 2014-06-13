@@ -23,8 +23,10 @@ public class CardConverter {
     }
 
     public static void main ( String[] args ) {
-	String name = args[0];
-	Card test = new Card(1,2,1,0);
-	convert(test,name);
+	for (int i = 0; i < args.length; ++i) {
+	    String name = args[i];
+	    Card test = new Card(i);
+	    convert(test,name);
+	}
     }
 }
