@@ -1,62 +1,87 @@
+// Layout
 int rows = 3;
 int cols = 4;
-int num = rows*cols;
-int rectX[] = new int[num];
-int rectY[] = new int[num];
-int rectSize = 90;
+int num = 12;
+int cardW = 90;
+int cardH = 150;
+int xBuff = 5;
+int yBuff = 5;
+// Cards and Images
+Deck deck = new Deck();
+ArrayList<Card> hand = deck.deal();
+ArrayList<GameCard> cards;
+// State
 int numClicked = 0;
-
-color rectColor[] = new color[num];
-boolean rectOver[] = new boolean[num];
-boolean rectClicked[] = new boolean[num];
+int setsFound = 0;
+boolean anySets = false;
 
 void setup() {
-    size(1000,500);
-    for (int i = 0; i < num; ++i) {
-      rectColor[i] = color(0,0,0);
-      rectOver[i] = false;
-      rectClicked[i] = false;
-      rectX[i] = ((i%cols)+1)*width/(cols + 1) - rectSize/2 + 10*(cols/2 - (i%cols));
-      rectY[i] = ((i/cols)+1)*height/(rows + 1) - rectSize/2 + 10*(rows/2 - (i/cols));
-    }
+    size(500,500);
+    background(50, 127, 50);
+    verify();
+    render();
+}
+
+void render() {
+  cards = new ArrayList<GameCard>(hand.size());
+  num = hand.size();
+  cols = num/rows;
+  for (int i = 0; i < num; ++i) {
+    int x = (int) (width/2 + ((i%cols) - (double)cols/2)*(cardW + xBuff));
+    int y = (int) (height/2 + ((i/cols) - (double)rows/2)*(cardH + yBuff));
+    cards.add(new GameCard(hand.get(i), i, x, y));
+  } 
 }
 
 
 void draw() {
     update(mouseX, mouseY);
 
-    noStroke();
-    if (numClicked > 3) {
-      for (int i = 0; i < num; ++i) {
-        rectClicked[i] = false;
-      }
-      numClicked = 0;
-    }
-    for (int i = 0; i < num; ++i) {
-      if (rectClicked[i]) {
-  	rectColor[i] = color(0,255,0);
-      } else if (rectOver[i]) {
-  	rectColor[i] = color(255,255,0);
+    noTint();
+    if (numClicked >= 3) {
+      if (numClicked == 3) {
+        if (keyPressed) {
+          if (key == ENTER || key == RETURN) {
+            check();
+          }
+          else if (key == ESC) {
+            for (GameCard card : cards) {
+              card.clicked = false;
+            }
+            numClicked = 0;
+          }
+        }
       } else {
-  	rectColor[i] = color(0,0,0);
+          for (GameCard card : cards) {
+            card.clicked = false;
+          }
+          numClicked = 0;
       }
-       stroke(rectColor[i]);
-       fill(127);
-       rect(rectX[i], rectY[i], rectSize, rectSize);
+    }
+    for (GameCard card : cards) {
+      if (card.clicked) {
+  	card.tint = 205;
+      } else if (card.over) {
+  	card.tint = 230;
+      } else {
+  	 card.tint = 255;
+      }
+      tint(card.tint);
+      image(card.image, card.x, card.y, cardW, cardH);
     }
 }
 
 void update(int x, int y) {
-  for (int i = 0; i < num; ++i) {
-    if (overRect(rectX[i], rectY[i], rectSize, rectSize)) {
-	rectOver[i] = true;
+  for (GameCard card : cards) {
+    if (overCard(card.x, card.y, cardW, cardH)) {
+	card.over = true;
     } else {
-	rectOver[i] = false;
+	card.over = false;
     }
   }
 }
 
-boolean overRect(int x, int y, int width, int height) {
+boolean overCard(int x, int y, int width, int height) {
     if (mouseX >= x && mouseX <= x+width &&
 	mouseY >= y && mouseY <= y+height) {
 	return true;
@@ -66,14 +91,76 @@ boolean overRect(int x, int y, int width, int height) {
 }
 
 void mouseClicked() {
-  for (int i = 0; i < num; ++i) {
-    if (rectOver[i]) {
-      rectClicked[i] = !(rectClicked[i]);
-      if (rectClicked[i]) {
+  for (GameCard card : cards) {
+    if (card.over) {
+      card.clicked = !(card.clicked);
+      if (card.clicked) {
         ++numClicked;
       } else {
         --numClicked;
       }
     }
   }
+}
+
+void check() {
+  Card triplet[] = new Card[3];
+  for (int i = 0, j = 0; i < 3 && j < num; ++j) {
+    if (cards.get(j).clicked) {
+      triplet[i] = cards.get(j).card;
+      ++i;
+    }
+  }
+  Card a = triplet[0];
+  Card b = triplet[1];
+  Card c = triplet[2];
+  
+  if (c.equals(new Card(a,b))) {
+    ++setsFound;
+    hand.remove(a);
+    hand.remove(b);
+    hand.remove(c);
+    deck.refill(hand);
+    verify();
+    render();
+  }
+  for (GameCard card : cards) {
+    card.clicked = false;
+  }
+  numClicked = 0;
+}
+
+void verify() {
+  while (true) {
+    Set tester = new Set();
+    tester.readIn(hand);
+    if (tester.sets(hand).size() > 0) {
+      break;
+    }
+    deck.fillTo(hand, hand.size()+3);
+  }
+}
+
+
+class GameCard {
+    PImage image;
+    Card card;
+    int x;
+    int y;
+    int tint;
+    boolean over;
+    boolean clicked;
+    
+    GameCard(Card card, int index, int x, int y) {
+      this.card = card;
+      String name = "c"+index;
+      CardConverter.convert(card,name);
+      this.image = loadImage(name+".png");
+      this.x = x;
+      this.y = y;
+      this.tint = 255;
+      this.over = false;
+      this.clicked = false;
+    }
+
 }
