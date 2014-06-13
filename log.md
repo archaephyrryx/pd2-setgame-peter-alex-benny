@@ -8,6 +8,7 @@ Entries: Date; Name; Progress made
 2014-06-05 ~ Peter Duchovni ~ Added image for reference
 2014-06-09 ~ Peter Duchovni ~ Added set-image generator code written in Asymptote
                               Added java code to produce compiled asy postscript image
-2014-06-12 ~ Peter Duchovni ~ Added development branch for 2d gui (template gui)
-			      Modified asymptote code so that images have same dimensions
+2014-06-11 ~ Peter Duchovni ~ Added development branch for 2d gui (template gui)
+2014-06-12 ~ Peter Duchovni ~ Modified asymptote code so that images have same dimensions
+			      Wrote semi-functioning gui (issues with image loading)
 			      
