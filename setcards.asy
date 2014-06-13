@@ -5,10 +5,12 @@ size(5inch,7inch);
 pen redcol = red;
 pen greencol = heavygreen;
 pen purplecol = heavymagenta;
-real thickness = 3;
+real thickness = 5;
 real hatchwidth = 3;
 real hatchsep = 3mm;
+real weave=0.8;
 real warp=3/4;
+real weft=49/64;
 real xdiff=2;
 real ydiff=1;
 
@@ -25,7 +27,7 @@ path oval(pair c, real x, real y)
 }
 path wave(pair c, real x, real y)
 {
-    return (c+(x,y))..(c+(x-(y/2),-y))..(c+(-x+(y/2),-(warp*y)))..(c+(-x,-y))..(c+(-x+(y/2),y))..(c+(x-(y/2),warp*y))..cycle;
+    return scale(weave)*((c+(x*weft,y))..(c+(x*weft-(y/2),-y))..(c+(-x*weft+(y/2),-(warp*y)))..(c+(-x*weft,-y))..(c+(-x*weft+(y/2),y))..(c+(x*weft-(y/2),warp*y))..cycle);
 }
 void generate(int shape, int color, int number, int fill) {
     path border = (-xdiff-1,4+ydiff)--(xdiff+1,4+ydiff)--(xdiff+1,-4-ydiff)--(-xdiff-1,-4-ydiff)--cycle;

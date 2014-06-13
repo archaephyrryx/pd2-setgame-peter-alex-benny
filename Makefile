@@ -10,7 +10,7 @@ IMGS = $(NUMS:%=gui/data/%.png)
 .java.class:
 	javac $<
 
-all: Main.class $(IMGS) $(OBJS)
+all: Main.class CardConverter.class $(OBJS)
 
 CardConverter.class: CardConverter.java Card.java
 	javac CardConverter.java
@@ -27,7 +27,7 @@ Set.class: Set.java Card.java Deck.java
 Main.class: Main.java Set.java Card.java CardConverter.java
 	javac Main.java
 
-$(IMGS):
+$(IMGS): setcards.asy 
 	java CardConverter; mv *.png gui/data/
 
 clean:
