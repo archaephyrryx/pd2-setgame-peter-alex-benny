@@ -2,8 +2,8 @@
 int rows = 3;
 int cols = 4;
 int num = 12;
-int cardW = 90;
-int cardH = 150;
+int cardW = 120;
+int cardH = 200;
 int xBuff = 5;
 int yBuff = 5;
 // Cards and Images
@@ -16,7 +16,7 @@ int setsFound = 0;
 boolean anySets = false;
 
 void setup() {
-    size(500,500);
+    size(600,700);
     background(50, 127, 50);
     verify();
     render();
@@ -153,9 +153,7 @@ class GameCard {
     
     GameCard(Card card, int index, int x, int y) {
       this.card = card;
-      String name = "c"+index;
-      CardConverter.convert(card,name);
-      this.image = loadImage(name+".png");
+      this.image = loadImage(card.number()+".png");
       this.x = x;
       this.y = y;
       this.tint = 255;
