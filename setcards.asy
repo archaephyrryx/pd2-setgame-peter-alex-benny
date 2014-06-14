@@ -4,7 +4,7 @@ import patterns;
 size(5inch,7inch);
 pen redcol = red;
 pen greencol = heavygreen;
-pen purplecol = heavymagenta;
+pen purplecol = purple;
 real thickness = 5;
 real hatchwidth = 3;
 real hatchsep = 3mm;
