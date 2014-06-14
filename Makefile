@@ -7,7 +7,7 @@ OBJS = $(PROPS:%.java=%.class)
 .java.class:
 	javac $<
 
-all: Main.class $(OBJS) image-stamp
+all: Deck.class Card.class Set.class $(OBJS) image-stamp
 	if [ ! -d gui/data ]; then mkdir gui/data; fi
 
 Deck.class: Deck.java Card.java
@@ -18,9 +18,6 @@ Card.class: Card.java $(OBJS)
 
 Set.class: Set.java Card.java Deck.java
 	javac Set.java
-
-Main.class: Main.java Set.java Card.java
-	javac Main.java
 
 image-stamp: setcards.asy 
 	./asy-gen.sh
