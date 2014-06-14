@@ -8,6 +8,7 @@ OBJS = $(PROPS:%.java=%.class)
 	javac $<
 
 all: Main.class $(OBJS) image-stamp
+	if [ ! -d gui/data ]; then mkdir gui/data; fi
 
 Deck.class: Deck.java Card.java
 	javac Deck.java

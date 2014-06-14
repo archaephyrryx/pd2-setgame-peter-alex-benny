@@ -23,6 +23,20 @@ public class Deck {
         return hand;
     }
 
+    public void swapout(ArrayList<Card> hand, ArrayList<Card> discard) {
+        if (discard.size() == 0) {
+            return;
+        }
+        ArrayList<Card> replace = deal(discard.size());
+        for (int i = 0; i < discard.size(); ++i) {
+            if (i < replace.size()) {
+                hand.set(hand.indexOf(discard.get(i)), replace.get(i));
+            } else {
+                hand.remove(hand.indexOf(discard.get(i)));
+            }
+        }
+    }
+
     public void refill(ArrayList<Card> hand) {
         fillTo(hand, 12);
     }
