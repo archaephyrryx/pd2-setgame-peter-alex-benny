@@ -8,4 +8,4 @@ main = do
     g <- newStdGen
     let x = fst $ randomR (0, (choose 81 12) - 1) g
     let n = deal 12 81 x [0..80]
-    return ((map toEnum n) :: [Card])
+    print ((map toEnum n) :: [Card])

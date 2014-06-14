@@ -5,65 +5,44 @@ type Pile = [Card]
 -- Brutally Inefficient
 
 triples :: Pile -> [[Card]]
-triples p = [ [p !! i , p !! j] | i <- [0..m], j <- [i+1..m]]
+triples p = [ [p !! i , p !! j , p !! k] | i <- [0..m], j <- [i+1..m], k <- [j+1..m] ]
     where
 	m = (length p) - 1
 
-sets :: Pile -> ([Card] -> Bool) -> [[Card]]
-sets p f = uniq $ map order $ map (\[a,b] -> [a,b,third a b]) $ filter (\[a,b] -> f [a,b] && elem (third a b) p) (triples p)
-
-order :: Ord a => [a] -> [a]
-order [] = []
-order (x:[]) = (x:[])
-order (x:y:[]) | x < y = (x:y:[])
-	       | otherwise = (y:x:[])
-order (x:y:z:[]) | x < y && x < z = x : order (y:z:[])
-                 | y < z && y < x = y : order (x:z:[])
-		 | z < x && z < y = z : order (x:y:[])
-
-uniq :: Eq a => [a] -> [a]
-uniq [] = []
-uniq (x:xs) = x : (uniq $ filter (/=x) xs)
+sets :: Pile -> [[Card]]
+sets p = filter (\[a,b,c] -> isSet a b c) (triples p)
 
 -- Less Inefficient : Find singleton sets first
 
-present :: Prop p => (Card -> p) -> (p,p,p) -> [Card] -> [Bool]
-present f (a,b,c) xs = present' xs (a,b,c) [False,False,False]
+group :: Prop p => (Card -> p) -> (p,p,p) -> [Card] -> [[Card]]
+group f (a,b,c) xs = group' xs (a,b,c) [[],[],[]]
     where
-        present' [] _ cs = cs
-        present' (x:xs) (a,b,c) [hasA,hasB,hasC] | f x == a = (\[l,m,n] -> [True,m,n]) (present' xs (a,b,c) [hasA,hasB,hasC])
-                            | f x == b = (\[l,m,n] -> [l,True,n]) (present' xs (a,b,c) [hasA,hasB,hasC])
-                            | f x == c = (\[l,m,n] -> [l,m,True]) (present' xs (a,b,c) [hasA,hasB,hasC])
+	group' [] _ cs = cs
+	group' (x:xs) (a,b,c) [as,bs,cs] | f x == a = (\[l,m,n] -> [x:l,m,n]) (group' xs (a,b,c) [as,bs,cs])
+					 | f x == b = (\[l,m,n] -> [l,x:m,n]) (group' xs (a,b,c) [as,bs,cs])
+					 | f x == c = (\[l,m,n] -> [l,m,x:n]) (group' xs (a,b,c) [as,bs,cs])
 
-hasColor = present (\x -> color x) (Red,Green,Purple)
-hasCount = present (\x -> count x) (One,Two,Three)
-hasShape = present (\x -> shape x) (Oval,Diamond,Wave)
-hasFill  = present (\x ->  fill x) (Empty,Shaded,Filled)
+groupColor = group (\x -> color x) (Red,Green,Purple)
+groupCount = group (\x -> count x) (One,Two,Three)
+groupShape = group (\x -> shape x) (Oval,Diamond,Wave)
+groupFill = group (\x -> fill x) (Empty,Shaded,Filled)
 
-freq _ [] = 0
-freq x (y:ys) | x == y = 1 + freq x ys
-              | otherwise = freq x ys
-
-hasProps :: [Card] -> [Bool]
-hasProps = (map and).(apply [hasColor, hasCount, hasShape, hasFill])
-    where      
-        apply :: [(a -> b)] -> a -> [b]
-        apply [] _ = []
-        apply (f:fs) x = f x : apply fs x
-
-enjoin :: (a -> Bool) -> (a -> Bool) -> (a -> Bool)
-enjoin f g = (\x -> f x && g x)
-
-join :: [Bool] -> [([Card] -> Bool)] -> ([Card] -> Bool)
-join _ [] = (\_ -> True)
-join (b:bs) (f:fs) | b = enjoin f (join bs fs)
-                   | otherwise = join bs fs
-
-
-same :: Prop p => (Card -> p) -> ([Card] -> Bool)
-same f [a,b] = f a == f b
+preset :: [String] -> Pile -> [[Card]]
+preset xs p | null p = []
+	    | length p < 3 = []
+            | not (elem "color" xs) && isolated (groupColor p) = unicolor
+            | not (elem "count" xs) && isolated (groupCount p) = unicount
+            | not (elem "shape" xs) && isolated (groupShape p) = unishape
+            | not (elem "fill"  xs) && isolated (groupFill  p) = unifill
+	    | otherwise = reset p
+	    where
+		unicolor = concat (map (preset ("color":xs)) (groupColor p))
+		unicount = concat (map (preset ("count":xs)) (groupCount p))
+		unishape = concat (map (preset ("shape":xs)) (groupShape p))
+		unifill  = concat (map (preset  ("fill":xs)) (groupFill  p))
+		isolated = any null
 
 reset :: Pile -> [[Card]]
 reset p | null p = []
         | length p < 3 = []
-        | otherwise = let has = hasProps p in sets p (join (map not has) ([same color, same count, same shape, same fill]))
+        | otherwise = sets p
