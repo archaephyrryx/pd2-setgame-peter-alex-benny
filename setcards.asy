@@ -6,8 +6,8 @@ pen redcol = red;
 pen greencol = heavygreen;
 pen purplecol = purple;
 real thickness = 5;
-real hatchwidth = 3;
-real hatchsep = 3mm;
+real hatchwidth = 2;
+real hatchsep = 5mm;
 real weave=0.8;
 real warp=3/4;
 real weft=49/64;
@@ -50,8 +50,8 @@ void generate(int shape, int color, int number, int fill) {
     } else if (color%3 == 2) {
 	hue = purplecol;
     }
-    for (i = 0; i < number+1; ++i) {
-	real n = (number/2);
+    for (i = 0; i < (number%3)+1; ++i) {
+	real n = ((number%3)/2);
 	    draw(shift(0,3*(i-n))*image,hue+thickness);
 	if (fill % 3 == 1) {
 	    add("hatch",hatch(hatchsep,N,hue+hatchwidth));

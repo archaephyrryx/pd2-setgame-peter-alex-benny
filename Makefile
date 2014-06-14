@@ -23,7 +23,7 @@ Main.class: Main.java Set.java Card.java
 
 image-stamp: setcards.asy 
 	./asy-gen.sh
-	for i in $$(seq 0 80); do asy -f png -o gui/data "$$i.asy"; done
+	for i in $$(seq 0 80); do asy -f png -o gui/data/ "$$i.asy"; echo $$i; done
 	touch image-stamp
 
 clean:
