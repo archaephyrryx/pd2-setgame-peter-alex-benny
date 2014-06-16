@@ -10,14 +10,24 @@ Requirements
 ------------
 
 * `processing` (Processing)
-* `asy` (Asymptote)
+* `tar`
+* `asy` (Asymptote; alternative to tar)
 
 
 Compiling
 ---------
 
-* Ensure `asy` command is in environment path
+If `asy` is installed:
+
 * Run `make`
+* Run `make images`
+* Open `gui/gui.pde` in Processing
+* Run sketch
+
+If `asy` is not installed:
+
+* Run `make`
+* Run `tar -xf images.tar`
 * Open `gui/gui.pde` in Processing
 * Run sketch
 

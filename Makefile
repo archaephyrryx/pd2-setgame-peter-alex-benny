@@ -7,7 +7,9 @@ OBJS = $(PROPS:%.java=%.class)
 .java.class:
 	javac $<
 
-all: Deck.class Card.class Set.class $(OBJS) image-stamp
+all: datadir Deck.class Card.class Set.class $(OBJS)
+	
+datadir: gui/data
 	if [ ! -d gui/data ]; then mkdir gui/data; fi
 
 Deck.class: Deck.java Card.java
@@ -19,10 +21,13 @@ Card.class: Card.java $(OBJS)
 Set.class: Set.java Card.java Deck.java
 	javac Set.java
 
-image-stamp: setcards.asy 
+images: setcards.asy 
 	./asy-gen.sh
 	for i in $$(seq 0 80); do asy -f png -o gui/data/ "$$i.asy"; echo $$i; done
 	touch image-stamp
+
+tar: image-stamp
+	tar -cf images.tar gui/data/*.png
 
 clean:
 	$(RM) *.class *.png ?.asy ??.asy
