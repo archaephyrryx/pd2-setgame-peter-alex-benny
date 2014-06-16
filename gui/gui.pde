@@ -28,7 +28,7 @@ void restart() {
 
 void setup() {
     size(700,700);
-    background(50, 127, 50);
+    background(150);
     verify();
     render();
 }
@@ -46,7 +46,7 @@ void render() {
 
 
 void draw() {
-    background(50, 127, 50);
+    background(150);
     if (dealtSets == 0) {
       textSize(20);
       text("No Sets Remaining. You Have Found "+numFound+" Sets.", 100, 30);
@@ -182,7 +182,7 @@ void clue() {
         }
         numClicked = 3;
     } else if (numClicked == 1) {
-        Card singlet = null;
+        Card singlet = cards.get(0).card;
         for (GameCard c : cards) {
             if (c.clicked) {
                 singlet = c.card;
@@ -191,9 +191,9 @@ void clue() {
         }
         for (Triple trip : sets) {
             if (trip.member(singlet)) {
-                cards.get(hand.indexOf(trip.a)).clicked = true;
-                cards.get(hand.indexOf(trip.b)).clicked = true;
-                cards.get(hand.indexOf(trip.c)).clicked = true;
+                cards.get(Card.indexIn(trip.a, hand)).clicked = true;
+                cards.get(Card.indexIn(trip.b, hand)).clicked = true;
+                cards.get(Card.indexIn(trip.c, hand)).clicked = true;
                 break;
             }
         }
@@ -208,9 +208,9 @@ void clue() {
         }
         for (Triple trip : sets) {
             if (trip.member(twin[0]) && trip.member(twin[1])) {
-                cards.get(hand.indexOf(trip.a)).clicked = true;
-                cards.get(hand.indexOf(trip.b)).clicked = true;
-                cards.get(hand.indexOf(trip.c)).clicked = true;
+                cards.get(Card.indexIn(trip.a, hand)).clicked = true;
+                cards.get(Card.indexIn(trip.b, hand)).clicked = true;
+                cards.get(Card.indexIn(trip.c, hand)).clicked = true;
                 break;
             }
         }

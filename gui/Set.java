@@ -126,10 +126,22 @@ class Triple {
     }
 
     public boolean member(Card x) {
-	return (x.equals(a) || x.equals(b) || x.equals(c));
+	return ((x != null) && (x.equals(a) || x.equals(b) || x.equals(c)));
     }
 
     public boolean disjoint(Triple other) {
 	return (!(this.member(other.a) || this.member(other.b) || this.member(other.c)));
+    }
+    
+    public Pair getComp(Card first) {
+      if (first == a) {
+        return (new Pair(b,c));
+      } else if (first == b) {
+        return (new Pair(a,c));
+      } else if (first == c) {
+        return (new Pair(a,c));
+      } else {
+        return null;
+      }
     }
 }

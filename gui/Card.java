@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Card implements Comparable<Card> {
     public Color color;
     public Count count;
@@ -54,6 +56,14 @@ public class Card implements Comparable<Card> {
 	return (String.format("%s %s %s %s", this.count, this.fill, this.color, this.shape));
     }
 
+    public static int indexIn(Card c, ArrayList<Card> a) {
+        for (int i = 0; i < a.size(); ++i) {
+            if (a.get(i).number() == c.number()) {
+              return i;
+            }
+        }
+        return -1;
+    }
 }
 
 
