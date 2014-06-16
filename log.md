@@ -16,5 +16,6 @@ Entries: Date; Name; Progress made
 			      Modified makefile to use time-stamp for png generation
 			      Debugged GUI
 			      Added game features to GUI
+2014-06-15 ~ Peter Duchovni ~ Added tar option to substitute asy for machines without asy installed
 
 			      
